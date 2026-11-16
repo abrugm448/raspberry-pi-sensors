@@ -1,4 +1,4 @@
-#include "mqtt_client.h"
+#include "MqttClient.h"
 
 #include <mosquitto.h>
 
@@ -92,19 +92,12 @@ void MqttClient::handle_connect(mosquitto *, void *self, int rc)
         return;
     }
     std::cerr << "MQTT: verbonden\n";
-    if (client->connect_handler_)
-    {
-        client->connect_handler_();
-    }
+    client->connected();
 }
 
 void MqttClient::handle_message(mosquitto *, void *self, const mosquitto_message *msg)
 {
     auto *client = static_cast<MqttClient *>(self);
-    if (!client->message_handler_)
-    {
-        return;
-    }
     std::string payload(static_cast<const char *>(msg->payload), static_cast<size_t>(msg->payloadlen));
-    client->message_handler_(msg->topic, payload);
+    client->message_received(msg->topic, payload);
 }

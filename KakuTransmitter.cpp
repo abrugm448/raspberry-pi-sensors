@@ -1,4 +1,4 @@
-#include "kaku_transmitter.h"
+#include "KakuTransmitter.h"
 
 #include <sched.h>
 

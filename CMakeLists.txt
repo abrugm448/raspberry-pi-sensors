@@ -17,9 +17,11 @@ pkg_check_modules(GPIOD REQUIRED IMPORTED_TARGET libgpiodcxx>=2.0)
 pkg_check_modules(MOSQUITTO REQUIRED IMPORTED_TARGET libmosquitto)
 
 # Add source to this project's executable.
-add_executable (kiosk-sensors "kiosk-sensors.cpp"
-                              "kaku_transmitter.cpp" "kaku_transmitter.h"
-                              "mqtt_client.cpp" "mqtt_client.h")
+add_executable (kiosk-sensors "main.cpp"
+                              "KakuTransmitter.cpp" "KakuTransmitter.h"
+                              "MqttClient.cpp" "MqttClient.h"
+                              "MqttKaku.cpp" "MqttKaku.h" 
+                              "constants.h")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET kiosk-sensors PROPERTY CXX_STANDARD 20)
