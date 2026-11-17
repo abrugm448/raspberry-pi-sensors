@@ -19,6 +19,7 @@ pkg_check_modules(MOSQUITTO REQUIRED IMPORTED_TARGET libmosquitto)
 # Add source to this project's executable.
 add_executable (kiosk-sensors "main.cpp"
                               "KakuTransmitter.cpp" "KakuTransmitter.h"
+                              "MovementSensor.cpp" "MovementSensor.h"
                               "MqttClient.cpp" "MqttClient.h"
                               "MqttKaku.cpp" "MqttKaku.h" 
                               "constants.h")

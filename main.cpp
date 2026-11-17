@@ -1,4 +1,5 @@
 #include "KakuTransmitter.h"
+#include "MovementSensor.h"
 #include "MqttKaku.h"
 #include "constants.h"
 
@@ -8,6 +9,7 @@
 #include <csignal>
 
 constexpr unsigned TRANSMITTER_PIN = 4;           // GPIO pin for 433 mhz sending
+constexpr unsigned SENSOR_PIN = 23;               // GPIO pin for sensor
 constexpr std::uint32_t KAKU_ADDRESS = 12345678;
 
 void stop(int); 
@@ -23,6 +25,8 @@ int main()
         std::signal(SIGTERM, stop);
 
         KakuTransmitter kaku("/dev/gpiochip0", TRANSMITTER_PIN, KAKU_ADDRESS);
+        MovementSensor sensor("/dev/gpiochip0", SENSOR_PIN);
+
         MqttKaku mqtt("kiosk-sensors", kaku);
         mqtt.set_credentials("esp32", "egabrag");
         mqtt.set_will(constants::PREFIX + "/status", "offline", true);
@@ -32,6 +36,7 @@ int main()
         while (running)
         {
             mqtt.loop(100);
+            sensor.processEvents();
         }
 
         mqtt.publish(constants::PREFIX + "/status", "offline", true);
