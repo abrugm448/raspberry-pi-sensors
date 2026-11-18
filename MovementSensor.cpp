@@ -25,10 +25,10 @@ gpiod::line_request MovementSensor::createRequest(const std::string &chip_path, 
         .do_request();
 }
 
-void MovementSensor::processEvents()
+MotionState MovementSensor::getMotionState()
 {
     if (!request.wait_edge_events(std::chrono::milliseconds(0)))
-        return;
+        return MotionState::NotDetected;
 
     request.read_edge_events(buffer);
 
@@ -37,10 +37,14 @@ void MovementSensor::processEvents()
         if (event.type() == gpiod::edge_event::event_type::RISING_EDGE)
         {
             std::cout << "Movement!" << std::endl;
+            return MotionState::Detected;
         }
         else
         {
             std::cout << "Nothing here." << std::endl;
+            return MotionState::NotDetected;
         }
     }
+
+    return MotionState::NotDetected;
 }

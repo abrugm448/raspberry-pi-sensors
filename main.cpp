@@ -1,5 +1,6 @@
 #include "KakuTransmitter.h"
 #include "MovementSensor.h"
+#include "Screen.h"
 #include "MqttKaku.h"
 #include "constants.h"
 
@@ -26,6 +27,7 @@ int main()
 
         KakuTransmitter kaku("/dev/gpiochip0", TRANSMITTER_PIN, KAKU_ADDRESS);
         MovementSensor sensor("/dev/gpiochip0", SENSOR_PIN);
+        Screen screen;
 
         MqttKaku mqtt("kiosk-sensors", kaku);
         mqtt.set_credentials("esp32", "egabrag");
@@ -36,7 +38,8 @@ int main()
         while (running)
         {
             mqtt.loop(100);
-            sensor.processEvents();
+            MotionState motionState = sensor.getMotionState();
+            screen.processMovement(motionState);
         }
 
         mqtt.publish(constants::PREFIX + "/status", "offline", true);
